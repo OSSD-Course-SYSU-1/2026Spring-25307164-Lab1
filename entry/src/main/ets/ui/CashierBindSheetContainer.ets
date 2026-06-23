@@ -31,7 +31,7 @@ export struct CashierBindSheetContainer {
         title: () => {},
         height: SheetSize.FIT_CONTENT,
         showClose: true,
-        enableOutsideInteractive: false,
+        enableOutsideInteractive: true,  // 允许点击外部区域
         backgroundColor: '#E5FFFFFF',
         blurStyle: BlurStyle.COMPONENT_THICK,
         onWillDismiss: ((action: DismissSheetAction) => {

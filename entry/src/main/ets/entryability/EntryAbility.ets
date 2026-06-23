@@ -16,17 +16,31 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { DistributedManager } from '../util/DistributedManager';
 
 const DOMAIN = 0x0000;
 
 export default class EntryAbility extends UIAbility {
+  private distributedManager: DistributedManager = DistributedManager.getInstance();
+
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onCreate');
+    
+    // 初始化分布式管理器
+    this.distributedManager.initialize(this.context);
+    
+    // 处理迁移场景
+    if (launchParam.launchReason === AbilityConstant.LaunchReason.CONTINUATION) {
+      hilog.info(DOMAIN, 'testTag', 'Launched by continuation');
+      this.distributedManager.continueMigration(want);
+    }
   }
 
   onDestroy(): void {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onDestroy');
+    // 释放分布式资源
+    this.distributedManager.release();
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
@@ -55,5 +69,13 @@ export default class EntryAbility extends UIAbility {
   onBackground(): void {
     // Ability has back to background
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onBackground');
+  }
+  
+  // 新增：处理迁移保存数据
+  onContinue(wantParam: Record<string, Object>): AbilityConstant.OnContinueResult {
+    hilog.info(DOMAIN, 'testTag', 'onContinue called');
+    // 保存需要迁移的数据
+    wantParam['migrationData'] = 'payment_data';
+    return AbilityConstant.OnContinueResult.AGREE;
   }
 }

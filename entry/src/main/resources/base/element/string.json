@@ -23,6 +23,18 @@
     {
       "name":"kit_hwpay_change_other_pay_type",
       "value":"Other bank cards"
+    },
+    {
+      "name": "distributed_permission_reason",
+      "value": "Used for cross-device migration and data synchronization"
+    },
+    {
+      "name": "get_bundle_info_reason",
+      "value": "Used for obtaining device and application information"
+    },
+    {
+      "name": "dm_service_reason",
+      "value": "Used for device discovery and distributed management"
     }
   ]
 }
